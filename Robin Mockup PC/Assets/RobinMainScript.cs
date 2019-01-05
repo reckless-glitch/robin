@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Net;
 using UnityEngine;
 
 public class RobinMainScript : MonoBehaviour {
@@ -8,23 +9,17 @@ public class RobinMainScript : MonoBehaviour {
     public ArduinoComRobin_benja arduino;
     public UDPSend udp;
     public string name = "[PC]";
-
+    public DebugInfo_benja debugInfo;
+    public string localIP;
+    public string androIP;
+    public int port = 8051;
 
     // Use this for initialization
     void Start () {
-        bool isEnabled = true;
-        #if UNITY_ANDROID
-        isEnabled = false;
-        #endif
-       
-        #if UNITY_EDITOR
-        isEnabled = true;
-        #endif
-        
-        #if UNITY_STANDALONE
-        isEnabled = true;
-        #endif
 
+        localIP = LocalIPAddress();
+        androIP = localIP.Substring(0, localIP.LastIndexOf('.')) + ".1";
+        bool isEnabled = true;
         if (!isEnabled)
         {
             this.enabled = false;
@@ -33,11 +28,18 @@ public class RobinMainScript : MonoBehaviour {
         Debug.Log(name+"starting windows main");
         if (video == null) video = FindObjectOfType<RobinVideoManager>();
         if (arduino == null) arduino = FindObjectOfType<ArduinoComRobin_benja>();
+        if (debugInfo == null) debugInfo = FindObjectOfType<DebugInfo_benja>();
+        debugInfo.log("system", name);
         if (udp == null) udp = FindObjectOfType<UDPSend>();
-        udp.init(); //set IP and Port here
+        udp.init(androIP,port); //set IP and Port here
         arduino.onToken = onToken;
         Reset();
         setDebug(true);
+        debugInfo.log("moviePath",Application.streamingAssetsPath);
+        debugInfo.log("key q", "toggle debug (this) on/off ");
+        debugInfo.log("key r", "reset all devices");
+        debugInfo.log("keys a,b,c,d,e,f", "simulate token sent");
+        debugInfo.log("keys g", "simulate not existing token sent");
     }
 
     public string currentMovie;
@@ -46,19 +48,38 @@ public class RobinMainScript : MonoBehaviour {
     public bool onToken(string token)
     {
         Debug.Log(name+"ontoken " + token);
+        debugInfo.log("token", token);
         currentToken = token;
         currentMovie = "movie" + token + ".mp4";
         udp.sendString("token:"+token);
         if (video.play(currentMovie))
         {
             Debug.Log(name+"starting movie " + currentMovie);
+            debugInfo.log("current Movie", currentMovie);
             arduino.scan(scanningTimeSec);
             return true;
         }
         Debug.Log(name+"could not start movie " + currentMovie);
+        debugInfo.log("current Movie", "not found "+ currentMovie);
         currentToken += " (error)";
         currentMovie += "(file not found)";
         return false;
+    }
+
+    public static string LocalIPAddress()
+    {
+        IPHostEntry host;
+        string localIP = "0.0.0.0";
+        host = Dns.GetHostEntry(Dns.GetHostName());
+        foreach (IPAddress ip in host.AddressList)
+        {
+            if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+            {
+                localIP = ip.ToString();
+                break;
+            }
+        }
+        return localIP;
     }
 
     public void Reset()
@@ -81,9 +102,7 @@ public class RobinMainScript : MonoBehaviour {
 
     public void setDebug(bool setDebug)
     {
-        isDebug = setDebug;
-        udp.createGUI = isDebug;
-        udp.sendString("debug:" + (isDebug ? "1" : "0"));
+        isDebug = debugInfo.setDebugState(setDebug);
     }
 
     // Update is called once per frame

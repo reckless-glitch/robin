@@ -30,7 +30,7 @@ public class UDPSend : MonoBehaviour
     // public int port;  // define in init
     public string IP = "127.0.0.1";
     public int port = 8051;
-
+    public bool autoInit = false;
     // "connection" things
     IPEndPoint remoteEndPoint;
     UdpClient client;
@@ -58,7 +58,7 @@ public class UDPSend : MonoBehaviour
     // start from unity3d
     public void Start()
     {
-        init();
+       if(autoInit) init();
     }
 
     // OnGUI

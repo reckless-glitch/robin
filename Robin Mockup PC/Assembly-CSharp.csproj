@@ -65,6 +65,7 @@
     <Compile Include="Assets\RobinAndroidMain.cs" />
     <Compile Include="Assets\RobinMainScript.cs" />
     <Compile Include="Assets\RobinVideoManager.cs" />
+    <Compile Include="Assets\Scripts\DebugInfo_benja.cs" />
     <Compile Include="Assets\Scripts\TCPTestClient.cs" />
     <Compile Include="Assets\Scripts\TCPTestServer.cs" />
     <Compile Include="Assets\test.cs" />

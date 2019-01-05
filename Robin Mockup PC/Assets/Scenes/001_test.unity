@@ -113,6 +113,51 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &48755734
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 48755736}
+  - component: {fileID: 48755735}
+  m_Layer: 0
+  m_Name: debug
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &48755735
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 48755734}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19c5c483474ee854a9de1f6a1852564d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textField: 
+  debugging: 1
+  names: []
+  values: []
+  doUpdate: 1
+--- !u!4 &48755736
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 48755734}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &534669902
 GameObject:
   m_ObjectHideFlags: 0
@@ -238,9 +283,14 @@ MonoBehaviour:
   arduino: {fileID: 755973324}
   udp: {fileID: 0}
   name: '[PC] '
+  debugInfo: {fileID: 0}
+  localIP: 
+  androIP: 
+  port: 8051
   currentMovie: 
   currentToken: 
   scanningTimeSec: 5
+  isDebug: 0
 --- !u!114 &665734087
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -254,7 +304,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   video: {fileID: 0}
   udp: {fileID: 0}
+  debugInfo: {fileID: 0}
   name: '[android] '
+  isDebug: 0
+  noDisablingInEditor: 1
   currentMovie: 
   currentToken: 
 --- !u!4 &665734089
@@ -371,16 +424,17 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1019149625}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 57977ce65f2904b4fafb854613a99e5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   IP: any
-  port: 8051
+  port: 8050
+  autoInit: 0
   lastReceivedUDPPacket: 
   allReceivedUDPPackets: 
-  createGUI: 1
+  createGUI: 0
 --- !u!114 &1019149627
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -392,8 +446,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab006ab95768ff243bdd5f81849778df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IP: 127.0.0.1
-  port: 8051
+  IP: 192.168.43.1
+  port: 8050
+  autoInit: 0
   testMessage: test
   sendTestMessage: 0
   createGUI: 0

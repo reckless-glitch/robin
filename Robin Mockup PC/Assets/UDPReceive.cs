@@ -37,6 +37,8 @@ public class UDPReceive : MonoBehaviour
     public int port = 8051; // define > init
     //public string IP = "127.0.0.1";
 
+    public bool autoInit = false;
+
     // infos
     public string lastReceivedUDPPacket = "";
     public string allReceivedUDPPackets = ""; // clean up this from time to time!
@@ -62,7 +64,7 @@ public class UDPReceive : MonoBehaviour
     public void Start()
     {
 
-        init();
+        if (autoInit) init();
     }
 
     // OnGUI

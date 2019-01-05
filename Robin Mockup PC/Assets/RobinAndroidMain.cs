@@ -7,8 +7,10 @@ public class RobinAndroidMain : MonoBehaviour
 
     public RobinVideoManager video;
     public UDPReceive udp;
+    public DebugInfo_benja debugInfo;
     public string name ="[android]";
-
+    public bool isDebug = false;
+    public bool noDisablingInEditor;
 
     // Use this for initialization
     void Start()
@@ -21,21 +23,38 @@ public class RobinAndroidMain : MonoBehaviour
 
         #if UNITY_STANDALONE
         isEnabled = false;
+        noDisablingInEditor = false;
         #endif
 
         #if UNITY_EDITOR
         isEnabled = true;
         #endif
+        if (udp == null) udp = FindObjectOfType<UDPReceive>();
 
-        if (!isEnabled)
+        if (!noDisablingInEditor && !isEnabled)
         {
+            udp.enabled = false;
             this.enabled = false;
             return;
         }
+
         Debug.Log(name+"starting android main");
-        if (video == null) video = FindObjectOfType<RobinVideoManager>();
-        if (udp == null) udp = FindObjectOfType<UDPReceive>();
+        RobinMainScript main = FindObjectOfType<RobinMainScript>();
+        udp.init("", main.port);
         udp.onMessage += onMessage;
+
+        if (!noDisablingInEditor)
+        {
+            //disable main script and udpsend
+            if (main.udp != null) main.udp.enabled = false;
+            main.enabled = false;
+        }
+
+        if (video == null) video = FindObjectOfType<RobinVideoManager>();
+        if (debugInfo == null) debugInfo = FindObjectOfType<DebugInfo_benja>();
+        debugInfo.log("system", name);
+        debugInfo.log("moviePath", Application.streamingAssetsPath);
+
         Reset();
         onDebug(true);
     }
@@ -45,6 +64,8 @@ public class RobinAndroidMain : MonoBehaviour
 
     public void onMessage(string message)
     {
+        debugInfo.log("last message received", message);
+
         string messageBegin = "token:";
         if (message.Contains(messageBegin))
         {
@@ -67,17 +88,18 @@ public class RobinAndroidMain : MonoBehaviour
     
     public void onDebug(bool setDebug)
     {
-        udp.createGUI = setDebug;
+        isDebug = debugInfo.setDebugState(setDebug);
     }
-
     public bool onToken(string token)
     {
         Debug.Log(name+"got token " + token);
         currentToken = token;
+        debugInfo.log("token", token);
         currentMovie = "movie" + token + ".mp4";
         if (video.play(currentMovie,false,true))
         {
             Debug.Log(name+"starting movie " + currentMovie);
+            debugInfo.log("movie",currentMovie);
             return true;
         }
         Debug.Log(name+"could not start movie " + currentMovie);
