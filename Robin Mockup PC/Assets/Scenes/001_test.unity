@@ -147,7 +147,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
+  m_BackGroundColor: {r: 0.5, g: 0.5, b: 0.5, a: 0}
   m_projectionMatrixMode: 1
   m_SensorSize: {x: 36, y: 24}
   m_LensShift: {x: 0, y: 0}
@@ -204,6 +204,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   videoPlayer: {fileID: 0}
   movieFiles: []
+  assetsPath: 
   filepath: 
 --- !u!1 &665734085
 GameObject:
@@ -214,6 +215,7 @@ GameObject:
   m_Component:
   - component: {fileID: 665734089}
   - component: {fileID: 665734086}
+  - component: {fileID: 665734087}
   m_Layer: 0
   m_Name: mainscript
   m_TagString: Untagged
@@ -234,9 +236,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   video: {fileID: 534669906}
   arduino: {fileID: 755973324}
+  udp: {fileID: 0}
+  name: '[PC] '
   currentMovie: 
   currentToken: 
   scanningTimeSec: 5
+--- !u!114 &665734087
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 665734085}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19502eaa06221ea43848222727f786c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  video: {fileID: 0}
+  udp: {fileID: 0}
+  name: '[android] '
+  currentMovie: 
+  currentToken: 
 --- !u!4 &665734089
 Transform:
   m_ObjectHideFlags: 0
@@ -248,7 +268,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &755973323
 GameObject:
@@ -328,3 +348,66 @@ MonoBehaviour:
   baudrate: 9600
   ports: []
   arduinoPort: 
+--- !u!1 &1019149625
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1019149628}
+  - component: {fileID: 1019149627}
+  - component: {fileID: 1019149626}
+  m_Layer: 0
+  m_Name: udp
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1019149626
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1019149625}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57977ce65f2904b4fafb854613a99e5b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IP: any
+  port: 8051
+  lastReceivedUDPPacket: 
+  allReceivedUDPPackets: 
+  createGUI: 1
+--- !u!114 &1019149627
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1019149625}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab006ab95768ff243bdd5f81849778df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IP: 127.0.0.1
+  port: 8051
+  testMessage: test
+  sendTestMessage: 0
+  createGUI: 0
+  lastSentMessage: 
+--- !u!4 &1019149628
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1019149625}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
