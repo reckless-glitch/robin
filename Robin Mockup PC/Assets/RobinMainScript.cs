@@ -40,7 +40,7 @@ public class RobinMainScript : MonoBehaviour {
         debugInfo.log("key r", "reset all devices");
         debugInfo.log("keys a,b,c,d,e,f", "simulate token sent");
         debugInfo.log("keys g", "simulate not existing token sent");
-        debugInfo.log("keys alt+F4", "simulate not existing token sent");
+        debugInfo.log("keys alt+F4", "simulate not existing token sent"); 
     }
 
     public string currentMovie;
