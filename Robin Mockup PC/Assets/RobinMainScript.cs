@@ -40,6 +40,7 @@ public class RobinMainScript : MonoBehaviour {
         debugInfo.log("key r", "reset all devices");
         debugInfo.log("keys a,b,c,d,e,f", "simulate token sent");
         debugInfo.log("keys g", "simulate not existing token sent");
+        debugInfo.log("keys alt+F4", "simulate not existing token sent");
     }
 
     public string currentMovie;
@@ -47,12 +48,13 @@ public class RobinMainScript : MonoBehaviour {
     public float scanningTimeSec = 5;
     public bool onToken(string token)
     {
+        Reset();
         Debug.Log(name+"ontoken " + token);
         debugInfo.log("token", token);
         currentToken = token;
         currentMovie = "movie" + token + ".mp4";
         udp.sendString("token:"+token);
-        if (video.play(currentMovie))
+        if (video.play(currentMovie,false,true))
         {
             Debug.Log(name+"starting movie " + currentMovie);
             debugInfo.log("current Movie", currentMovie);
@@ -103,6 +105,7 @@ public class RobinMainScript : MonoBehaviour {
     public void setDebug(bool setDebug)
     {
         isDebug = debugInfo.setDebugState(setDebug);
+        udp.sendString("debug:" + (isDebug ? "1" : "0"));
     }
 
     // Update is called once per frame
@@ -117,5 +120,6 @@ public class RobinMainScript : MonoBehaviour {
         if (Input.GetKeyDown("e")) onToken("E");
         if (Input.GetKeyDown("f")) onToken("F");
         if (Input.GetKeyDown("g")) onToken("ä");//should provide an error which is handled
+        if (Input.GetKeyDown("p")) { udp.sendString("forceplay"); video.videoPlayer.Play(); }
     }
 }

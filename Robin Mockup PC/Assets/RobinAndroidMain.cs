@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public class RobinAndroidMain : MonoBehaviour
@@ -9,8 +10,9 @@ public class RobinAndroidMain : MonoBehaviour
     public UDPReceive udp;
     public DebugInfo_benja debugInfo;
     public string name ="[android]";
+    public string movieFolderPath = "";
     public bool isDebug = false;
-    public bool noDisablingInEditor;
+    public bool enableInEditor;
 
     // Use this for initialization
     void Start()
@@ -23,15 +25,15 @@ public class RobinAndroidMain : MonoBehaviour
 
         #if UNITY_STANDALONE
         isEnabled = false;
-        noDisablingInEditor = false;
+        enableInEditor = false;
         #endif
 
         #if UNITY_EDITOR
-        isEnabled = true;
+        isEnabled = enableInEditor;
         #endif
         if (udp == null) udp = FindObjectOfType<UDPReceive>();
 
-        if (!noDisablingInEditor && !isEnabled)
+        if (!enableInEditor && !isEnabled)
         {
             udp.enabled = false;
             this.enabled = false;
@@ -43,19 +45,39 @@ public class RobinAndroidMain : MonoBehaviour
         udp.init("", main.port);
         udp.onMessage += onMessage;
 
-        if (!noDisablingInEditor)
+        if (!enableInEditor)
         {
             //disable main script and udpsend
             if (main.udp != null) main.udp.enabled = false;
             main.enabled = false;
         }
 
-        if (video == null) video = FindObjectOfType<RobinVideoManager>();
         if (debugInfo == null) debugInfo = FindObjectOfType<DebugInfo_benja>();
         debugInfo.log("system", name);
-        debugInfo.log("moviePath", Application.streamingAssetsPath);
+        if (video == null) video = FindObjectOfType<RobinVideoManager>();
 
-        Reset();
+        AndroidJavaClass jc = new AndroidJavaClass("android.os.Environment");
+        string path = jc.CallStatic<AndroidJavaObject>("getExternalStoragePublicDirectory", jc.GetStatic<string>("DIRECTORY_DOWNLOADS")).Call<string>("getAbsolutePath");
+
+
+        debugInfo.log("data path", "testing " + path);
+        if (System.IO.Directory.Exists(path))
+        {
+            if (System.IO.Directory.Exists(movieFolderPath))
+            {
+                debugInfo.log("data path", "found " + movieFolderPath);
+            }
+            if (movieFolderPath != "") movieFolderPath = path + "/" + movieFolderPath;
+            else movieFolderPath = path;
+            debugInfo.log("data path", "testing " + movieFolderPath);
+            if (System.IO.Directory.Exists(movieFolderPath))
+            {
+                movieFolderPath += "/";
+                debugInfo.log("data path","found " + movieFolderPath);
+            }
+        }
+        if (movieFolderPath != "") video.setAssetsPath(movieFolderPath);
+        //Reset();
         onDebug(true);
     }
 
@@ -84,24 +106,36 @@ public class RobinAndroidMain : MonoBehaviour
             Reset();
         }
 
+        messageBegin = "forceplay";
+        if (message.Contains(messageBegin))
+        {
+            forceplay = true;
+        }
+
     }
-    
+
+    private bool forceplay = false;
+
     public void onDebug(bool setDebug)
     {
         isDebug = debugInfo.setDebugState(setDebug);
     }
+
     public bool onToken(string token)
     {
         Debug.Log(name+"got token " + token);
         currentToken = token;
         debugInfo.log("token", token);
+        
         currentMovie = "movie" + token + ".mp4";
+        debugInfo.log("movie", "loading "+currentMovie);
         if (video.play(currentMovie,false,true))
         {
             Debug.Log(name+"starting movie " + currentMovie);
-            debugInfo.log("movie",currentMovie);
+            debugInfo.log("movie","loaded "+video.filepath);
             return true;
         }
+        debugInfo.log("movie", "error loading " +video.filepath);
         Debug.Log(name+"could not start movie " + currentMovie);
         currentToken += " (error)";
         currentMovie += "(file not found)";
@@ -117,9 +151,11 @@ public class RobinAndroidMain : MonoBehaviour
 
     }
 
+
     // Update is called once per frame
     void Update()
     {
-
+        if (forceplay) video.videoPlayer.Play();
+        forceplay = false;
     }
 }
