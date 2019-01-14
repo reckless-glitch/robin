@@ -11,10 +11,12 @@ public class RobinVideoManager : MonoBehaviour {
     public string assetsPath ="";
     public string filepath = "";
     public bool doThePrepareThing = true;
+    public VideoClip videoclip;
 
 	// Use this for initialization
 	void Start () {
         if(videoPlayer == null) videoPlayer = gameObject.AddComponent<VideoPlayer>();
+        videoPlayer.aspectRatio = VideoAspectRatio.FitInside;
         if (assetsPath == "") assetsPath = Application.streamingAssetsPath + "/";
         if (debugInfo == null) debugInfo = FindObjectOfType<DebugInfo_benja>();
         debugInfo.log("[movie] filepath", filepath);
@@ -38,7 +40,16 @@ public class RobinVideoManager : MonoBehaviour {
     private bool setPlay = false;
     private bool setLoop;
 
-    public bool play(string filename = "",bool loop = false, bool viaUpdate = false)
+    public bool play(VideoClip clip, bool loop = false, bool viaUpdate = false)
+    {
+        if (clip == null) return false;
+        videoPlayer.source = VideoSource.VideoClip;
+        videoclip = clip;
+        debugInfo.log("[movie] filetest", "exists - is internal clip");
+        return play(loop, viaUpdate);
+    }
+
+    public bool play(string filename, bool loop = false, bool viaUpdate = false)
     {
         videoPlayer.source = VideoSource.Url;
         if (filename != "") filepath = assetsPath + filename;
@@ -46,6 +57,11 @@ public class RobinVideoManager : MonoBehaviour {
         debugInfo.log("[movie] filetest", "testing");
         if (!System.IO.File.Exists(filepath)) return false;
         debugInfo.log("[movie] filetest", "exists");
+        return play(loop, viaUpdate);
+    }
+
+    public bool play(bool loop = false, bool viaUpdate = false)
+    {
         if (viaUpdate)
         {
             //this is probably not the main loop so set this up to be rerun via update()
@@ -63,9 +79,17 @@ public class RobinVideoManager : MonoBehaviour {
             Debug.Log("play via update second run");
         }
         Debug.Log("play running");
-        debugInfo.log("[movie] filepath", filepath);
-        videoPlayer.isLooping = loop;
-        videoPlayer.url = filepath;
+        if (videoPlayer.source == VideoSource.Url)
+        {
+            debugInfo.log("[movie] filepath", filepath);
+            videoPlayer.url = filepath;
+        }
+        else
+        {
+            debugInfo.log("[movie] filepath", "internal clip: ");
+            videoPlayer.clip = videoclip;
+        }
+
         /*
             if(doThePrepareThing)
             {
@@ -86,6 +110,7 @@ public class RobinVideoManager : MonoBehaviour {
             
     }
         */
+        videoPlayer.isLooping = loop;
         try
         {
             debugInfo.log("[movie] status", "called play");
@@ -98,7 +123,10 @@ public class RobinVideoManager : MonoBehaviour {
             debugInfo.log("[movie] status", "called play - failed");
         }
         return false;
+
     }
+
+
 
     private bool setstop = false;
 

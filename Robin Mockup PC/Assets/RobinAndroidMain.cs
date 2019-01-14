@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.Video;
 
 public class RobinAndroidMain : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class RobinAndroidMain : MonoBehaviour
     public string movieFolderPath = "";
     public bool isDebug = false;
     public bool enableInEditor;
+    public VideoClip[] videos;
 
     // Use this for initialization
     void Start()
@@ -56,9 +58,11 @@ public class RobinAndroidMain : MonoBehaviour
         debugInfo.log("system", name);
         if (video == null) video = FindObjectOfType<RobinVideoManager>();
 
+        string path ="";
+        #if UNITY_STANDALONE
         AndroidJavaClass jc = new AndroidJavaClass("android.os.Environment");
-        string path = jc.CallStatic<AndroidJavaObject>("getExternalStoragePublicDirectory", jc.GetStatic<string>("DIRECTORY_DOWNLOADS")).Call<string>("getAbsolutePath");
-
+        path = jc.CallStatic<AndroidJavaObject>("getExternalStoragePublicDirectory", jc.GetStatic<string>("DIRECTORY_DOWNLOADS")).Call<string>("getAbsolutePath");
+        #endif
 
         debugInfo.log("data path", "testing " + path);
         if (System.IO.Directory.Exists(path))
@@ -127,8 +131,28 @@ public class RobinAndroidMain : MonoBehaviour
         currentToken = token;
         debugInfo.log("token", token);
         
-        currentMovie = "movie" + token + ".mp4";
-        debugInfo.log("movie", "loading "+currentMovie);
+        currentMovie = "movie" + token;
+        debugInfo.log("movie", "loading clip"+currentMovie);
+        if(videos.Length>0)
+        {
+            for(int i= 0; i<videos.Length; i++)
+            {
+
+                if (videos[i] != null)
+                {
+                    Debug.Log("CLIP NAME " + videos[i].name);
+                    if (videos[i].name == currentMovie) if (video.play(videos[i], false, true))
+                        {
+                            Debug.Log(name + "starting movie " + currentMovie);
+                            debugInfo.log("movie", "loaded clip " + video.filepath);
+                            return true;
+                        }
+                }
+
+            }
+        }
+        currentMovie += ".mp4";
+        debugInfo.log("movie", "loading file" + currentMovie);
         if (video.play(currentMovie,false,true))
         {
             Debug.Log(name+"starting movie " + currentMovie);

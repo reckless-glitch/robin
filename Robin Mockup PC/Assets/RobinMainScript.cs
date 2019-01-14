@@ -7,6 +7,7 @@ public class RobinMainScript : MonoBehaviour {
 
     public RobinVideoManager video;
     public ArduinoComRobin_benja arduino;
+    public RobinAndroidMain android;
     public UDPSend udp;
     public string name = "[PC]";
     public DebugInfo_benja debugInfo;
@@ -28,6 +29,7 @@ public class RobinMainScript : MonoBehaviour {
         Debug.Log(name+"starting windows main");
         if (video == null) video = FindObjectOfType<RobinVideoManager>();
         if (arduino == null) arduino = FindObjectOfType<ArduinoComRobin_benja>();
+        if (android == null) android = FindObjectOfType<RobinAndroidMain>();
         if (debugInfo == null) debugInfo = FindObjectOfType<DebugInfo_benja>();
         debugInfo.log("system", name);
         if (udp == null) udp = FindObjectOfType<UDPSend>();
@@ -54,6 +56,11 @@ public class RobinMainScript : MonoBehaviour {
         currentToken = token;
         currentMovie = "movie" + token + ".mp4";
         udp.sendString("token:"+token);
+        if(android.enabled)
+        {
+            android.onToken(token);
+            return true;
+        }
         if (video.play(currentMovie,false,true))
         {
             Debug.Log(name+"starting movie " + currentMovie);

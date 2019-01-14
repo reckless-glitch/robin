@@ -242,15 +242,18 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 534669902}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ae7f787f2be7db44db379c3875023a59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   videoPlayer: {fileID: 0}
+  debugInfo: {fileID: 0}
   movieFiles: []
   assetsPath: 
   filepath: 
+  doThePrepareThing: 1
+  videoclip: {fileID: 0}
 --- !u!1 &665734085
 GameObject:
   m_ObjectHideFlags: 0
@@ -279,8 +282,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50a2a412d79153a4e900d2632ff21664, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  video: {fileID: 725196043}
+  video: {fileID: 534669906}
   arduino: {fileID: 755973324}
+  android: {fileID: 0}
   udp: {fileID: 0}
   name: '[PC] '
   debugInfo: {fileID: 0}
@@ -302,13 +306,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19502eaa06221ea43848222727f786c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  video: {fileID: 725196043}
+  video: {fileID: 534669906}
   udp: {fileID: 0}
   debugInfo: {fileID: 0}
   name: '[android] '
   movieFolderPath: robin
   isDebug: 0
-  noDisablingInEditor: 1
+  enableInEditor: 1
+  videos:
+  - {fileID: 32900000, guid: 2fb5c33da42e11443a6887b7c64c1f9f, type: 3}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   currentMovie: 
   currentToken: 
 --- !u!4 &665734089
@@ -343,7 +355,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!64 &725196038
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -458,9 +470,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   videoPlayer: {fileID: 725196042}
+  debugInfo: {fileID: 0}
   movieFiles: []
   assetsPath: 
   filepath: 
+  doThePrepareThing: 1
+  videoclip: {fileID: 0}
 --- !u!1 &755973323
 GameObject:
   m_ObjectHideFlags: 0
