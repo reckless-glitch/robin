@@ -141,7 +141,8 @@ public class RobinAndroidMain : MonoBehaviour
                 if (videos[i] != null)
                 {
                     Debug.Log("CLIP NAME " + videos[i].name);
-                    if (videos[i].name == currentMovie) if (video.play(videos[i], false, true))
+                    if (videos[i].name == currentMovie || videos.Length == 1)
+                        if (video.play(videos[i], false, true))
                         {
                             Debug.Log(name + "starting movie " + currentMovie);
                             debugInfo.log("movie", "loaded clip " + video.filepath);
